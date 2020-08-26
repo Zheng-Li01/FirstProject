@@ -1,0 +1,2 @@
+1. This is the first basic practice project of spider with Python -- China University Rankings Targeted Crawl[中国大学排名定向爬取]
+2. Get the chapter of the <FutIianShi> from BiXu site[笔趣看《伏天氏》全文章节爬取]
