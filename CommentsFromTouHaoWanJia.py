@@ -25,15 +25,20 @@ def parse_one_page(html,comment_info):
     for comments in soup.find_all('div',class_='comment'):
         comment = comments.find('span',class_='short').get_text()
         time = comments.find('span',class_='comment-time').get_text()
-        name = comments.find('a').get('href')
+        name = comments.find('span',class_='comment-info').get_text()[0:4]
+        print(name)
+        # print(type(name))
         comic={}
-        comic['comment'] =comment
+        comic['Comment'] =comment
         comic['Time']=time
         comic['Name']=name
-        # comment_info.append(comic)
-        print(comic)
-
-    return comic
+        # print(comic)
+        comment_info.append(comic)
+        # print(comment_info)
+        # comment_info.update(comic)
+    # print(comment_info)
+        # print(comment_info['Comment'])
+    return  comment_info
     
 # def write_to_file(comment_info,time_info, name_info):
 #     with open ('TouHaoWanJi.txt','a',encoding='utf-8') as f:
@@ -42,26 +47,35 @@ def parse_one_page(html,comment_info):
 #         f.write(name_info +'\n')
 #         f.write('\n\n')
 
+# def write_to_file(comment_info):
+#     with open ('TouHaoWanJi.csv','a',newline='') as f:
+#         filednames=['Comment','Time','Name']
+#         writer = csv.DictWriter(f,fieldnames=filednames)
+#         writer.writeheader()
+#         try:
+#             writer.writerows(comment_info)
+#         except:
+#             pass
+
 def write_to_file(comment_info):
-    with open ('TouHaoWanJi.csv','a',newline='') as f:
-        filednames=['comment','Time','Name']
-        writer = csv.DictWriter(f,fieldnames=filednames)
-        writer.writeheader()
-        try:
-            writer.writerows(comment_info)
-        except:
-            pass
+    with open('TouHaoWanJi.txt','a',encoding='utf-8') as  f:
+        for i in range(len(comment_info)):
+            f.write(comment_info[i]['Comment']+'\n'+ comment_info[i]['Time']+'\n'+comment_info[i]['Name'])
+            # print(comment_info[i]['Comment']+ comment_info[i]['Time']+'\t'+comment_info[i]['Name'])
+            f.write('\n')
 
 def main(start):
-    comment_info={}
+    comment_info=[]
 
     url = 'https://movie.douban.com/subject/4920389/comments?start=' + str(start) + '&limit=20&sort=new_score&status=P&percent_type='
     html = get_one_page(url)
+    # print(html)
     data = parse_one_page(html,comment_info)
+    # print(data)
     write_to_file(comment_info)
 
 if __name__ =='__main__':
-    for i in range(3):
+    for i in range(1):
         main(i*20)
         print('completed the current page')
         time.sleep(1)
