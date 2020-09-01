@@ -6,6 +6,7 @@ import bs4
 import time
 import os
 import csv
+import pandas as pd
 
 def get_one_page(url):
     try:
@@ -23,11 +24,14 @@ def get_one_page(url):
 def parse_one_page(html,comment_info):
     soup = BeautifulSoup(html,'html.parser')
     for comments in soup.find_all('div',class_='comment'):
-        comment = comments.find('span',class_='short').get_text()
-        time = comments.find('span',class_='comment-time').get_text()
-        name = comments.find('span',class_='comment-info').get_text()[0:4]
-        print(name)
-        # print(type(name))
+        comment = comments.find('span',class_='short').get_text().strip()
+        time = comments.find('span',class_='comment-time').get_text().strip()
+        name = comments.find('span',class_='comment-info').get_text().strip().replace(' ','').split(' ')[0].split('\n')[0]
+        # name = comments.find('span',class_='comment-info').get_text().strip()
+        # name1 =name.split(' ')
+        # name2=name1[0].split('\n')[0]
+        # print(name)
+
         comic={}
         comic['Comment'] =comment
         comic['Time']=time
@@ -37,7 +41,7 @@ def parse_one_page(html,comment_info):
         # print(comment_info)
         # comment_info.update(comic)
     # print(comment_info)
-        # print(comment_info['Comment'])
+        # print(comment_info['Comment']))
     return  comment_info
     
 # def write_to_file(comment_info,time_info, name_info):
@@ -47,22 +51,25 @@ def parse_one_page(html,comment_info):
 #         f.write(name_info +'\n')
 #         f.write('\n\n')
 
-# def write_to_file(comment_info):
-#     with open ('TouHaoWanJi.csv','a',newline='') as f:
-#         filednames=['Comment','Time','Name']
-#         writer = csv.DictWriter(f,fieldnames=filednames)
-#         writer.writeheader()
-#         try:
-#             writer.writerows(comment_info)
-#         except:
-#             pass
-
 def write_to_file(comment_info):
-    with open('TouHaoWanJi.txt','a',encoding='utf-8') as  f:
-        for i in range(len(comment_info)):
-            f.write(comment_info[i]['Comment']+'\n'+ comment_info[i]['Time']+'\n'+comment_info[i]['Name'])
-            # print(comment_info[i]['Comment']+ comment_info[i]['Time']+'\t'+comment_info[i]['Name'])
-            f.write('\n')
+    # with open ('TouHaoWanJi.csv','a',newline='') as f:
+    filednames=['Comment','Time','Name']
+    data_Test = pd.DataFrame(columns=filednames,index =None,data=comment_info)
+    # print(data_Test)
+    data_Test.to_csv('TouHaoWanJi.csv',encoding='utf-8_sig')
+        # writer = csv.DictWriter(f,fieldnames=filednames)
+        # writer.writeheader()
+        # try:
+        #     writer.writerows(comment_info)
+        # except:
+        #     pass
+
+# def write_to_file(comment_info):
+#     with open('TouHaoWanJi.txt','a',encoding='utf-8') as  f:
+#         for i in range(len(comment_info)):
+#             f.write(comment_info[i]['Comment']+'\n'+ comment_info[i]['Time']+ '\n'+comment_info[i]['Name'])
+#             # print(comment_info[i]['Comment']+ comment_info[i]['Time']+'\t'+comment_info[i]['Name'])
+#             f.write('\n\n')
 
 def main(start):
     comment_info=[]
