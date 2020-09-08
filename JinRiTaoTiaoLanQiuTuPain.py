@@ -32,6 +32,7 @@ def get_one_page(offset,keyword):
         response = requests.get(url,timeout =10)
         if response.status_code  ==200:
             # print('successful')
+            # print(type(response.text))
             return response.text
         else:
             return None
@@ -42,13 +43,18 @@ def get_one_page(offset,keyword):
 def parse_one_page(html):
     urls=[]
     data =json.loads(html)
-    print(data)
+    # print(data)
 
-    if data and 'data' in data.keys():
-        for item in data.get('data'):
+    if data and 'data_ext' in data.keys():
+        print(data.keys())
+        for item in data.get('data_ext'):
             page_urls=[]
             title = item.get('title')
+            print(title)
+            print(type(item))
             image_detail = item.get('image_list')
+            print(image_detail)
+            print(type(image_detail))
             for i in range(len(image_detail)):
                 url = image_detail[i]['url']
                 page_urls.append(url)
@@ -83,7 +89,7 @@ def save_image_file(urls):
 
 def main(offset,word):
     html =get_one_page(offset,word)
-    print(html)
+    # print(html)
     urls = parse_one_page(html)
     save_image_file(urls)
 
@@ -94,4 +100,4 @@ if __name__ =="__main__":
     # pool.close()
     # pool.join()
     for i in range(2):
-        main(i *20,'街头篮球')
+        main(i *20,'篮球')
